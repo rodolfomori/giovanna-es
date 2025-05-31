@@ -1,0 +1,475 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import AppLayout from '../components/AppLayout';
+import GitHubLoginSection from '../components/GitHubLoginSection';
+import MarkdownRenderer from '../components/MarkdownRenderer';
+import { useLanguage } from '../utils/LanguageContext';
+import { cn } from '../utils/cn';
+
+// Define enum for tabs
+const TABS = {
+  PASTE: 'paste',
+  UPLOAD: 'upload',
+  GITHUB: 'github'
+};
+
+// URL base da API
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+const CodeCheckPage = () => {
+  const { t } = useLanguage();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(TABS.PASTE);
+  const [code, setCode] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState(null);
+  const [error, setError] = useState(null);
+  const [fileName, setFileName] = useState('');
+
+  // Initialize tab from URL query parameter
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')?.toLowerCase();
+    if (tabParam && Object.values(TABS).includes(tabParam)) {
+      setActiveTab(tabParam);
+
+      // Clear the tab param without page reload
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('tab');
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  // Handle tab change
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setAnalysis(null);
+    setCode('');
+    setError(null);
+  };
+
+  // Handle code change in textarea
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
+    setAnalysis(null);
+    setError(null);
+  };
+
+  const supportedExtensions = [
+    '.js', '.jsx', '.ts', '.tsx', '.html', '.css', '.py',
+    '.java', '.php', '.c', '.cpp', '.rb', '.json',
+    '.md', '.txt', '.sql', '.sh', '.xml', '.yml', '.yaml',
+    '.go', '.cs', '.swift', '.kt', '.rs', '.dart'
+  ];
+  // Handle file upload
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Verificar se o arquivo tem uma extensão suportada
+      let fileExtension = '';
+      if (file.name.includes('.')) {
+        fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      }
+
+      // Se não tem extensão ou não é suportada, vamos tentar detectar pelo tipo MIME
+      let isValidFile = supportedExtensions.includes(fileExtension);
+
+      // Se não tem extensão válida, verificamos pelo tipo MIME para arquivos de texto
+      if (!isValidFile && file.type.startsWith('text/')) {
+        isValidFile = true;
+        // Se é texto sem extensão, vamos definir uma extensão padrão
+        if (!fileExtension) {
+          fileExtension = '.txt';
+        }
+      }
+
+      if (!isValidFile) {
+        setError(`Tipo de arquivo não suportado. Por favor, envie apenas arquivos de código ou texto.`);
+        e.target.value = ''; // Limpar o input de arquivo
+        return;
+      }
+
+      setFileName(file.name);
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const content = e.target.result;
+
+          // Verifica se o conteúdo é texto válido
+          if (typeof content === 'string') {
+            setCode(content);
+            setError(null);
+          } else {
+            throw new Error('O conteúdo do arquivo não é texto válido');
+          }
+        } catch (error) {
+          console.error('Erro ao ler o arquivo:', error);
+          setError('Não foi possível ler o conteúdo do arquivo. Certifique-se de que é um arquivo de texto válido.');
+          setCode('');
+        }
+
+        setAnalysis(null);
+      };
+
+      reader.onerror = () => {
+        setError('Erro ao ler o arquivo. Por favor, tente novamente com outro arquivo.');
+        setCode('');
+        setAnalysis(null);
+      };
+
+      // Ler como texto
+      reader.readAsText(file);
+    }
+  };
+
+
+  // Handle analyze code button click
+  const handleAnalyzeCode = async (codeContent) => {
+    try {
+      // Verificar se o conteúdo é um elemento DOM ou evento (que causaria erro circular)
+      let codeToAnalyze;
+
+      // Se recebemos um parâmetro externo
+      if (codeContent) {
+        // Tratar diferentes tipos de entrada
+        if (typeof codeContent === 'string') {
+          codeToAnalyze = codeContent;
+        } else if (codeContent instanceof Event || codeContent?.target) {
+          // É um evento - ignorar e usar o estado interno
+          codeToAnalyze = code;
+        } else if (codeContent?.toString) {
+          // Tentar converter para string se possível
+          codeToAnalyze = codeContent.toString();
+        } else {
+          // Fallback: ignorar entrada inválida e usar o estado
+          console.warn('Tipo de entrada não suportado para análise de código:', typeof codeContent);
+          codeToAnalyze = code;
+        }
+      } else {
+        // Sem parâmetro externo, usar o estado interno
+        codeToAnalyze = code;
+      }
+
+      // Verificação final
+      if (!codeToAnalyze || typeof codeToAnalyze !== 'string' || !codeToAnalyze.trim()) {
+        setError('Por favor, adicione algum código para analisar.');
+        return;
+      }
+
+      setIsAnalyzing(true);
+      setError(null);
+      setAnalysis(null);
+
+      let response;
+
+      if (activeTab === TABS.PASTE) {
+        // Analyze pasted code
+        response = await axios.post(`${API_URL}/api/code-check/analyze`, {
+          code: codeToAnalyze
+        });
+      } else if (activeTab === TABS.UPLOAD) {
+        // Get file extension for better language detection
+        const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+
+        // Format the code with file info if it's not already formatted
+        const fileContent = !codeToAnalyze.startsWith('------- Arquivo:')
+          ? `------- Arquivo: ${fileName} -------\n\n${codeToAnalyze}\n\n`
+          : codeToAnalyze;
+
+        // Analyze uploaded file
+        response = await axios.post(`${API_URL}/api/code-check/analyze-file`, {
+          fileContent: fileContent,
+          fileName: fileName || 'unnamed_file',
+          fileType: fileExtension.replace('.', '') // Remove the dot from extension
+        });
+      } else if (activeTab === TABS.GITHUB) {
+        // GitHub code might already be formatted with file headers
+        response = await axios.post(`${API_URL}/api/code-check/analyze`, {
+          code: codeToAnalyze
+        });
+      }
+
+      if (!response || !response.data) {
+        throw new Error('Resposta inválida do servidor');
+      }
+
+      setAnalysis(response.data.analysis);
+    } catch (err) {
+      console.error('Error analyzing code:', err);
+      setError(
+        err.response?.data?.message ||
+        'Não foi possível analisar o código no momento. Por favor, tente novamente mais tarde.'
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  return (
+    <AppLayout>
+      <div className="container py-6 md:py-8">
+        {/* Header */}
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-neutral-800 dark:text-white">
+            {t('common.codeCheck')}
+          </h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            Encontre bugs, receba dicas e aprenda a melhorar seu código
+          </p>
+        </div>
+
+        {/* Main content */}
+        <div className="max-w-4xl mx-auto bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-colors duration-200">
+          {/* Tabs */}
+          <div className="flex border-b border-neutral-200 dark:border-neutral-800">
+            <button
+              onClick={() => handleTabChange(TABS.PASTE)}
+              className={`flex-1 py-4 text-center font-medium transition-colors duration-200 ${activeTab === TABS.PASTE
+                ? 'text-primary-600 dark:text-primary-500 border-b-2 border-primary-600 dark:border-primary-500'
+                : 'text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-500'
+                }`}
+            >
+              <div className="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Colar Código
+              </div>
+            </button>
+
+            <button
+              onClick={() => handleTabChange(TABS.UPLOAD)}
+              className={`flex-1 py-4 text-center font-medium transition-colors duration-200 ${activeTab === TABS.UPLOAD
+                ? 'text-primary-600 dark:text-primary-500 border-b-2 border-primary-600 dark:border-primary-500'
+                : 'text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-500'
+                }`}
+            >
+              <div className="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Upload de Arquivo
+              </div>
+            </button>
+
+            <button
+              onClick={() => handleTabChange(TABS.GITHUB)}
+              className={`flex-1 py-4 text-center font-medium transition-colors duration-200 ${activeTab === TABS.GITHUB
+                ? 'text-primary-600 dark:text-primary-500 border-b-2 border-primary-600 dark:border-primary-500'
+                : 'text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-500'
+                }`}
+            >
+              <div className="flex items-center justify-center">
+                <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                </svg>
+                GitHub
+              </div>
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {/* Content based on active tab */}
+            {activeTab === TABS.PASTE && (
+              <div>
+                <label htmlFor="code-input" className="block text-neutral-700 dark:text-neutral-300 font-medium mb-2">
+                  Cole seu código aqui
+                </label>
+                <textarea
+                  id="code-input"
+                  value={code}
+                  onChange={handleCodeChange}
+                  className={cn(
+                    "w-full h-64 p-4 border border-neutral-300 dark:border-neutral-700 rounded-lg",
+                    "bg-neutral-50 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 font-mono text-sm",
+                    "focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-200",
+                    isAnalyzing && "animate-pulse pointer-events-none opacity-80"
+                  )}
+                  placeholder="// Cole seu código javascript aqui para análise&#10;// Exemplo:&#10;function soma(a, b) {&#10;  return a + b&#10;}"
+                ></textarea>
+              </div>
+            )}
+
+            {activeTab === TABS.UPLOAD && (
+              <div>
+                <input
+                  type="file"
+                  id="file-upload"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  accept={supportedExtensions.join(',')}
+                />
+                {!code && (
+                  <>
+                    <label className="block text-neutral-700 dark:text-neutral-300 font-medium mb-2">
+                      Envie seu arquivo de código
+                    </label>
+                    <div className="border-2 border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-8 text-center">
+                      <label
+                        htmlFor="file-upload"
+                        className="cursor-pointer flex flex-col items-center justify-center"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-neutral-400 dark:text-neutral-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <span className="text-neutral-700 dark:text-neutral-300 font-medium">Clique para escolher um arquivo</span>
+                        <span className="text-neutral-500 dark:text-neutral-400 text-sm mt-1">ou arraste e solte aqui</span>
+                        <span className="text-neutral-500 dark:text-neutral-400 text-xs mt-2">
+                          Suporta diversos tipos de arquivos de código e texto
+                        </span>
+                        <span className="text-neutral-500 dark:text-neutral-400 text-xs mt-1">
+                          (JavaScript, Python, Java, C/C++, HTML, CSS, e mais)
+                        </span>
+                      </label>
+                    </div>
+                  </>
+                )}
+
+                {code && (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-neutral-700 dark:text-neutral-300 font-medium mb-2">Arquivo carregado: {fileName}</h3>
+                      <label className={cn(
+                        "flex items-center border border-neutral-300 dark:border-neutral-700 rounded-lg p-2",
+                        "text-neutral-700 dark:text-neutral-300 font-medium mb-2 transition-colors duration-200",
+                        "hover:text-primary-600 hover:border-primary-600 dark:hover:text-primary-500 dark:hover:border-primary-500 cursor-pointer",
+                      )} htmlFor='file-upload'
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Substituir código
+                      </label>
+                    </div>
+                    <div className="p-4 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 font-mono text-sm max-h-48 overflow-y-auto">
+                      {code}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === TABS.GITHUB && (
+              <GitHubLoginSection
+                onCodeSelect={codeContent => handleAnalyzeCode(codeContent)}
+                isAnalyzing={isAnalyzing}
+              />
+            )}
+
+            {/* Error message */}
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300">
+                <p className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {error}
+                </p>
+              </div>
+            )}
+
+            {/* Analysis Results */}
+            {analysis && (
+              <div className="mt-6 p-6 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg">
+                <div className="flex items-center mb-4 pb-2 border-b border-neutral-200 dark:border-neutral-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-primary-600 dark:text-primary-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
+                    Análise de Código
+                  </h3>
+                </div>
+                <MarkdownRenderer markdown={analysis} />
+              </div>
+            )}
+
+            {/* Analyze button */}
+            {!analysis && activeTab !== TABS.GITHUB && (
+              <div className="mt-6">
+                <button
+                  onClick={handleAnalyzeCode}
+                  disabled={!code || isAnalyzing}
+                  className={`py-2 px-4 rounded-lg font-medium transition-colors duration-200 ${code && !isAnalyzing
+                    ? 'bg-primary-600 text-white hover:bg-primary-700'
+                    : 'bg-neutral-300 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed'
+                    }`}
+                >
+                  {isAnalyzing ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Analisando...
+                    </span>
+                  ) : (
+                    'Analisar Código'
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Tips section */}
+          {!analysis && (
+            <div className="p-6 bg-neutral-50 dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700">
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-200 mb-4">
+                Dicas para Solução de Bugs
+              </h3>
+
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-neutral-700 dark:text-neutral-300">
+                    Leia atentamente as mensagens de erro - elas geralmente apontam para o problema exato.
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-neutral-700 dark:text-neutral-300">
+                    Use console.log() para verificar valores de variáveis em diferentes pontos do código.
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-neutral-700 dark:text-neutral-300">
+                    Quebre o problema em partes menores e teste cada parte separadamente.
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-neutral-700 dark:text-neutral-300">
+                    Verifique erros comuns como: parênteses não fechados, erros de digitação em nomes de variáveis, e confusão entre = (atribuição) e == ou === (comparação).
+                  </span>
+                </li>
+              </ul>
+
+              <div className="mt-4 p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700">
+                <div className="flex items-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary-600 dark:text-primary-400 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                    Precisa de mais ajuda? Converse com a Giovanna
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default CodeCheckPage; 

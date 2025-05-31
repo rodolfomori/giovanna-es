@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+    @apply outline-none;
+  }
+  
+  body {
+    @apply bg-neutral-50 text-neutral-900 font-sans;
+  }
+  
+  pre {
+    @apply p-4 rounded-lg bg-neutral-800 text-white overflow-x-auto;
+  }
+  
+  code {
+    @apply font-mono text-sm;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500;
+  }
+  
+  .btn-outline {
+    @apply border border-neutral-300 hover:bg-neutral-100 focus:ring-neutral-500;
+  }
+  
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-md overflow-hidden;
+  }
+  
+  .input {
+    @apply w-full rounded-lg border-neutral-300 shadow-sm focus:border-primary focus:ring-primary;
+  }
+
+  .spinner {
+    @apply animate-spin h-5 w-5 text-primary-600;
+  }
+  
+  .code-block {
+    @apply bg-neutral-800 rounded-lg p-4 text-white font-mono text-sm;
+  }
+  
+  .inline-code {
+    @apply bg-neutral-100 text-neutral-800 px-1.5 py-0.5 rounded font-mono text-sm;
+  }
+  
+  .loading-dot {
+    @apply inline-block h-2 w-2 rounded-full bg-current animate-loading-dots;
+  }
+  
+  .loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+}
+
+/* Custom syntax highlighting */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  @apply text-neutral-400;
+}
+
+.token.punctuation {
+  @apply text-neutral-300;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  @apply text-primary-300;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  @apply text-secondary-300;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  @apply text-yellow-300;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  @apply text-green-300;
+}
+
+.token.function,
+.token.class-name {
+  @apply text-red-300;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  @apply text-orange-300;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-300 rounded-full hover:bg-neutral-400;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.neutral.300') theme('colors.neutral.100');
+}
