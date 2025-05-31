@@ -112,7 +112,7 @@ const UserStatistics = () => {
         </nav>
       </div>
       
-      {/* Conteúdo da guia */}
+      {/* Contenido de la pestaña */}
       <div className="p-6">
         {activeTab === 'overview' && (
           <div>

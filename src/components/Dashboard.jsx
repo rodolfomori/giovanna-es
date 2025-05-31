@@ -79,9 +79,9 @@ const Dashboard = () => {
     };
   };
 
-  // Obter dia da semana em português
+  // Obtener día de la semana en español
   const getDayOfWeek = (date) => {
-    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     return days[date.getDay()];
   };
 
@@ -147,10 +147,10 @@ const Dashboard = () => {
                 </svg>
               </div>
               <div>
-                <h3 className="text-sm text-primary-700 font-medium">Desafios</h3>
+                <h3 className="text-sm text-primary-700 font-medium">Desafíos</h3>
                 <p className="text-2xl font-bold text-primary-800">{summary.total}</p>
                 <p className="text-xs text-primary-600 mt-1">
-                  {summary.recentActivities > 0 ? `+${summary.recentActivities} esta semana` : 'Nenhum esta semana'}
+                  {summary.recentActivities > 0 ? `+${summary.recentActivities} esta semana` : 'Ninguno esta semana'}
                 </p>
               </div>
             </div>
@@ -214,7 +214,7 @@ const Dashboard = () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Atividades Recentes
+              Actividades Recientes
             </h3>
             
             {recentChallenges.length > 0 ? (
@@ -279,7 +279,7 @@ const Dashboard = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-neutral-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-neutral-600 mb-2">Nenhuma atividade recente</p>
+                <p className="text-neutral-600 mb-2">Ninguna actividad reciente</p>
                 <Link 
                   to="/desafios" 
                   className="text-primary-600 hover:text-primary-700 font-medium"
@@ -290,19 +290,19 @@ const Dashboard = () => {
             )}
           </div>
           
-          {/* Progresso geral */}
+          {/* Progreso general */}
           <div className="lg:col-span-1">
             <h3 className="font-medium text-neutral-700 mb-3 flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              Progresso
+              Progreso
             </h3>
             
             <div className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
               <div className="mb-4">
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium text-neutral-700">Progresso Geral</span>
+                  <span className="font-medium text-neutral-700">Progreso General</span>
                   <span className="text-neutral-600">{summary.total}/300</span>
                 </div>
                 <div className="w-full bg-neutral-200 rounded-full h-2.5">

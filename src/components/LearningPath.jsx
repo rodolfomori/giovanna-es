@@ -4,7 +4,7 @@ import { getUserStats } from '../utils/achievementSystem';
 
 /**
  * Componente que exibe um caminho de aprendizado organizado para guiar
- * o progresso do usuário através de conteúdos em ordem recomendada
+ * el progreso del usuario a través de contenidos en orden recomendado
  */
 const LearningPath = () => {
   const [userStats, setUserStats] = useState(null);
@@ -39,75 +39,75 @@ const LearningPath = () => {
     html: [
       {
         id: 'html-basics',
-        title: 'Fundamentos do HTML',
-        description: 'Aprenda a estrutura básica de uma página HTML e as tags essenciais',
+        title: 'Fundamentos de HTML',
+        description: 'Aprenda la estructura básica de una página HTML y las etiquetas esenciales',
         level: 'Iniciante',
         estimatedTime: '2 horas',
         progress: 0,
         challenges: [
-          { id: 'html-intro-1', title: 'Estrutura HTML básica', type: 'multipleChoice' },
-          { id: 'html-intro-2', title: 'Tags essenciais', type: 'multipleChoice' },
+          { id: 'html-intro-1', title: 'Estructura HTML básica', type: 'multipleChoice' },
+          { id: 'html-intro-2', title: 'Etiquetas esenciales', type: 'multipleChoice' },
           { id: 'html-intro-3', title: 'Elementos de texto', type: 'codeCompletion' },
-          { id: 'html-intro-4', title: 'Links e âncoras', type: 'codeCompletion' },
-          { id: 'html-intro-5', title: 'Imagens e mídia', type: 'multipleChoice' }
+          { id: 'html-intro-4', title: 'Enlaces y anclas', type: 'codeCompletion' },
+          { id: 'html-intro-5', title: 'Imágenes y multimedia', type: 'multipleChoice' }
         ]
       },
       {
         id: 'html-forms',
-        title: 'Formulários HTML',
-        description: 'Aprenda a criar formulários interativos para coletar dados dos usuários',
+        title: 'Formularios HTML',
+        description: 'Aprenda a crear formularios interactivos para recopilar datos de los usuarios',
         level: 'Intermediário',
         estimatedTime: '3 horas',
         progress: 0,
         challenges: [
-          { id: 'html-forms-1', title: 'Estrutura de formulários', type: 'multipleChoice' },
+          { id: 'html-forms-1', title: 'Estructura de formularios', type: 'multipleChoice' },
           { id: 'html-forms-2', title: 'Tipos de input', type: 'multipleChoice' },
-          { id: 'html-forms-3', title: 'Validação de formulários', type: 'codeCompletion' },
-          { id: 'html-forms-4', title: 'Botões e envio', type: 'codeCompletion' },
-          { id: 'html-forms-5', title: 'Elementos avançados', type: 'multipleChoice' }
+          { id: 'html-forms-3', title: 'Validación de formularios', type: 'codeCompletion' },
+          { id: 'html-forms-4', title: 'Botones y envío', type: 'codeCompletion' },
+          { id: 'html-forms-5', title: 'Elementos avanzados', type: 'multipleChoice' }
         ]
       },
       {
         id: 'html-semantic',
-        title: 'HTML Semântico',
-        description: 'Aprenda a estruturar seu documento de forma significativa e acessível',
+        title: 'HTML Semántico',
+        description: 'Aprenda a estructurar su documento de forma significativa y accesible',
         level: 'Intermediário',
         estimatedTime: '2 horas',
         progress: 0,
         challenges: [
-          { id: 'html-semantic-1', title: 'Tags semânticas', type: 'multipleChoice' },
-          { id: 'html-semantic-2', title: 'Estrutura de página', type: 'codeCompletion' },
-          { id: 'html-semantic-3', title: 'Acessibilidade básica', type: 'multipleChoice' },
-          { id: 'html-semantic-4', title: 'SEO com HTML', type: 'multipleChoice' }
+          { id: 'html-semantic-1', title: 'Etiquetas semánticas', type: 'multipleChoice' },
+          { id: 'html-semantic-2', title: 'Estructura de página', type: 'codeCompletion' },
+          { id: 'html-semantic-3', title: 'Accesibilidad básica', type: 'multipleChoice' },
+          { id: 'html-semantic-4', title: 'SEO con HTML', type: 'multipleChoice' }
         ]
       }
     ],
     css: [
       {
         id: 'css-basics',
-        title: 'Fundamentos do CSS',
-        description: 'Aprenda a estilizar elementos HTML com propriedades básicas de CSS',
+        title: 'Fundamentos de CSS',
+        description: 'Aprenda a estilizar elementos HTML con propiedades básicas de CSS',
         level: 'Iniciante',
         estimatedTime: '3 horas',
         progress: 0,
         challenges: [
-          { id: 'css-intro-1', title: 'Sintaxe CSS', type: 'multipleChoice' },
-          { id: 'css-intro-2', title: 'Seletores básicos', type: 'multipleChoice' },
-          { id: 'css-intro-3', title: 'Cores e fundos', type: 'codeCompletion' },
-          { id: 'css-intro-4', title: 'Fonte e texto', type: 'codeCompletion' },
-          { id: 'css-intro-5', title: 'Margens e padding', type: 'multipleChoice' }
+          { id: 'css-intro-1', title: 'Sintaxis CSS', type: 'multipleChoice' },
+          { id: 'css-intro-2', title: 'Selectores básicos', type: 'multipleChoice' },
+          { id: 'css-intro-3', title: 'Colores y fondos', type: 'codeCompletion' },
+          { id: 'css-intro-4', title: 'Fuente y texto', type: 'codeCompletion' },
+          { id: 'css-intro-5', title: 'Márgenes y padding', type: 'multipleChoice' }
         ]
       },
       {
         id: 'css-layout',
-        title: 'Layout com CSS',
-        description: 'Aprenda a posicionar elementos na página usando diferentes técnicas',
+        title: 'Layout con CSS',
+        description: 'Aprenda a posicionar elementos en la página usando diferentes técnicas',
         level: 'Intermediário',
         estimatedTime: '4 horas',
         progress: 0,
         challenges: [
           { id: 'css-layout-1', title: 'Box Model', type: 'multipleChoice' },
-          { id: 'css-layout-2', title: 'Posicionamento', type: 'multipleChoice' },
+          { id: 'css-layout-2', title: 'Posicionamiento', type: 'multipleChoice' },
           { id: 'css-layout-3', title: 'Flexbox básico', type: 'codeCompletion' },
           { id: 'css-layout-4', title: 'Grid básico', type: 'codeCompletion' },
           { id: 'css-layout-5', title: 'Layouts responsivos', type: 'multipleChoice' }
@@ -115,15 +115,15 @@ const LearningPath = () => {
       },
       {
         id: 'css-advanced',
-        title: 'CSS Avançado',
-        description: 'Aprenda técnicas avançadas para estilização e animações',
+        title: 'CSS Avanzado',
+        description: 'Aprenda técnicas avanzadas para estilización y animaciones',
         level: 'Avançado',
         estimatedTime: '5 horas',
         progress: 0,
         challenges: [
-          { id: 'css-advanced-1', title: 'Transições', type: 'multipleChoice' },
-          { id: 'css-advanced-2', title: 'Animações', type: 'codeCompletion' },
-          { id: 'css-advanced-3', title: 'Transformações', type: 'codeCompletion' },
+          { id: 'css-advanced-1', title: 'Transiciones', type: 'multipleChoice' },
+          { id: 'css-advanced-2', title: 'Animaciones', type: 'codeCompletion' },
+          { id: 'css-advanced-3', title: 'Transformaciones', type: 'codeCompletion' },
           { id: 'css-advanced-4', title: 'Variáveis CSS', type: 'multipleChoice' },
           { id: 'css-advanced-5', title: 'Media Queries avançadas', type: 'codeCompletion' }
         ]
@@ -153,16 +153,16 @@ const LearningPath = () => {
         estimatedTime: '4 horas',
         progress: 0,
         challenges: [
-          { id: 'js-dom-1', title: 'Seleção de elementos', type: 'multipleChoice' },
-          { id: 'js-dom-2', title: 'Manipular conteúdo', type: 'codeCompletion' },
+          { id: 'js-dom-1', title: 'Selección de elementos', type: 'multipleChoice' },
+          { id: 'js-dom-2', title: 'Manipular contenido', type: 'codeCompletion' },
           { id: 'js-dom-3', title: 'Eventos', type: 'codeCompletion' },
-          { id: 'js-dom-4', title: 'Formulários com JS', type: 'codeCompletion' },
-          { id: 'js-dom-5', title: 'Animações simples', type: 'codeCompletion' }
+          { id: 'js-dom-4', title: 'Formularios con JS', type: 'codeCompletion' },
+          { id: 'js-dom-5', title: 'Animaciones simples', type: 'codeCompletion' }
         ]
       },
       {
         id: 'js-advanced',
-        title: 'JavaScript Avançado',
+        title: 'JavaScript Avanzado',
         description: 'Aprenda conceitos avançados e técnicas modernas de JavaScript',
         level: 'Avançado',
         estimatedTime: '6 horas',
@@ -195,7 +195,7 @@ const LearningPath = () => {
     
     if (level === 'Intermediário') {
       bgColor = 'bg-yellow-100 text-yellow-800';
-    } else if (level === 'Avançado') {
+    } else if (level === 'Avanzado') {
       bgColor = 'bg-red-100 text-red-800';
     }
     
@@ -309,7 +309,7 @@ const LearningPath = () => {
         </div>
       </div>
       
-      {/* Conteúdo do caminho ativo */}
+      {/* Contenido del camino activo */}
       <div className="p-6">
         <div className="space-y-6">
           {learningPaths[activeTab].map(module => {
@@ -406,7 +406,7 @@ const LearningPath = () => {
                   </div>
                 </div>
                 
-                {/* Desafios do módulo (expandíveis) */}
+                {/* Desafíos del módulo (expandibles) */}
                 {isExpanded && renderChallenges(module.challenges)}
                 
                 {/* Barra de separação visual */}

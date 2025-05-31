@@ -2,46 +2,45 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '../assets/devclub-logo.png';
-import LanguageSwitcher from '../components/LanguageSwitcher';
-import NetworkAnimation from '../components/NetworkAnimation'; // Adjust path as needed
+import NetworkAnimation from '../components/NetworkAnimation';
 import { checkAchievements, getUserStats } from '../utils/achievementSystem';
 import { useLanguage } from '../utils/LanguageContext';
 
-// Componente de Layout Principal com Suporte Completo para Dark Mode
+// Componente de Layout Principal con Soporte Completo para Dark Mode
 const AppLayout = ({ children }) => {
   const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const location = useLocation();
   const [userData] = useState({
-    username: localStorage.getItem('username') || t('common.appName'),
+    username: localStorage.getItem('username') || t('profile.defaultUsername'),
     avatar: localStorage.getItem('userAvatar') || '1'
   });
   const [userLevel, setUserLevel] = useState({ level: 1, title: t('levels.1') });
 
-  // Estado para o tema (dark/light)
+  // Estado para el tema (dark/light)
   const [darkMode, setDarkMode] = useState(() => {
-    // Verificar o localStorage ao montar o componente e também a preferência do sistema
+    // Verificar el localStorage al montar el componente y también la preferencia del sistema
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       return savedTheme === 'dark';
     } else {
-      // Se não houver preferência salva, usar a do sistema
+      // Si no hay preferencia guardada, usar la del sistema
       return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
   });
 
-  // Função para alternar o tema
+  // Función para alternar el tema
   const toggleDarkMode = () => {
     setDarkMode(prevMode => {
       const newMode = !prevMode;
-      // Salvar a preferência no localStorage
+      // Guardar la preferencia en localStorage
       localStorage.setItem('theme', newMode ? 'dark' : 'light');
       return newMode;
     });
   };
 
-  // Atualizar a classe no elemento HTML quando o tema mudar
+  // Actualizar la clase en el elemento HTML cuando el tema cambie
   useEffect(() => {
     const htmlElement = document.documentElement;
     if (darkMode) {
@@ -50,26 +49,26 @@ const AppLayout = ({ children }) => {
       htmlElement.classList.remove('dark');
     }
 
-    // Também definir uma variável CSS para facilitar a transição
+    // También definir una variable CSS para facilitar la transición
     htmlElement.style.colorScheme = darkMode ? 'dark' : 'light';
   }, [darkMode]);
 
-  // Atualizar dark mode quando a preferência do sistema mudar
+  // Actualizar dark mode cuando la preferencia del sistema cambie
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e) => {
-      // Só atualizar automaticamente se o usuário não tiver salvado uma preferência
+      // Solo actualizar automáticamente si el usuario no ha guardado una preferencia
       if (!localStorage.getItem('theme')) {
         setDarkMode(e.matches);
       }
     };
 
-    // Adicionar listener para mudanças
+    // Agregar listener para cambios
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  // Obter o emoji do avatar atual
+  // Obtener el emoji del avatar actual
   const getCurrentAvatarEmoji = () => {
     const avatarOptions = [
       { id: '1', emoji: '👨‍💻' },
@@ -86,12 +85,12 @@ const AppLayout = ({ children }) => {
     return avatar ? avatar.emoji : '👨‍💻';
   };
 
-  // Carregar nível do usuário com base nas conquistas
+  // Cargar nivel del usuario con base en los logros
   useEffect(() => {
     const userStats = getUserStats();
     const achievementsData = checkAchievements(userStats);
 
-    // Calcular nível com base na pontuação
+    // Calcular nivel con base en la puntuación
     const points = achievementsData.totalPoints;
 
     let level = { level: 1, title: t('levels.1') };
@@ -107,13 +106,13 @@ const AppLayout = ({ children }) => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    // Fechar dropdown do perfil se estiver aberto
+    // Cerrar dropdown del perfil si está abierto
     if (isProfileDropdownOpen) setIsProfileDropdownOpen(false);
   };
 
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
-    // Fechar menu mobile se estiver aberto
+    // Cerrar menú mobile si está abierto
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
@@ -121,7 +120,7 @@ const AppLayout = ({ children }) => {
     return location.pathname === path;
   };
 
-  // Fechar dropdowns ao clicar fora deles
+  // Cerrar dropdowns al hacer clic fuera de ellos
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isProfileDropdownOpen &&
@@ -139,7 +138,7 @@ const AppLayout = ({ children }) => {
 
   return (
     <div className={`min-h-screen flex flex-col bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-200`}>
-      {/* Navegação */}
+      {/* Navegación */}
       <NetworkAnimation />
 
       <nav className="bg-white dark:bg-neutral-900 shadow-sm border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-200">
@@ -173,32 +172,27 @@ const AppLayout = ({ children }) => {
               >
                 {t('common.codeCheck')}
               </Link>
-            
-             
              
               <Link
                 to="https://go.rodolfomori.com.br/suporte"
                 className={'font-medium text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-500'}
               >
-                Suporte
+                Soporte
               </Link>
 
-              {/* Botão de troca de idioma */}
-              <LanguageSwitcher />
-
-              {/* Botão de alternar tema */}
+              {/* Botón para alternar tema */}
               <button
                 onClick={toggleDarkMode}
                 className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200"
                 aria-label={darkMode ? t('common.lightMode') : t('common.darkMode')}
               >
                 {darkMode ? (
-                  // Ícone do sol (para tema claro)
+                  // Ícono del sol (para tema claro)
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 ) : (
-                  // Ícone da lua (para tema escuro)
+                  // Ícono de la luna (para tema oscuro)
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                   </svg>
@@ -257,10 +251,7 @@ const AppLayout = ({ children }) => {
 
             {/* Menu Mobile - Toggle */}
             <div className="flex items-center md:hidden">
-              {/* Botão de troca de idioma (mobile) */}
-              <LanguageSwitcher />
-
-              {/* Botão de alternar tema (mobile) */}
+              {/* Botón para alternar tema (mobile) */}
               <button
                 onClick={toggleDarkMode}
                 className="p-2 mr-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200"
@@ -357,7 +348,7 @@ const AppLayout = ({ children }) => {
                     : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800'} transition-colors duration-200`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Suporte
+                  Soporte
                 </Link>
                 <Link
                   to="/correcao-codigo"
@@ -388,12 +379,12 @@ const AppLayout = ({ children }) => {
         </div>
       </nav>
 
-      {/* Conteúdo principal */}
+      {/* Contenido principal */}
       <main className="flex-grow bg-neutral-50 dark:bg-neutral-950 transition-colors duration-200">
         {children}
       </main>
 
-      {/* Rodapé */}
+      {/* Pie de página */}
       <footer className="bg-neutral-800 dark:bg-neutral-950 text-white border-t border-neutral-700 dark:border-neutral-800 transition-colors duration-200 py-8">
         <div className="container">
           <div className="text-center">
@@ -401,30 +392,6 @@ const AppLayout = ({ children }) => {
             <p className="mt-2 text-neutral-400">
               {t('common.footer.subtitle')}
             </p>
-            {/* <div className="mt-4 flex justify-center space-x-4">
-              <a 
-                href="https://github.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors duration-200"
-              >
-                <span className="sr-only">GitHub</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-              </a>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors duration-200"
-              >
-                <span className="sr-only">Twitter</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
-            </div> */}
             <p className="mt-6 text-neutral-500 text-sm">
               &copy; {new Date().getFullYear()} {t('common.footer.title')}. {t('common.footer.copyright')}
             </p>

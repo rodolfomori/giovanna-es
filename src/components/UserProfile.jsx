@@ -69,13 +69,13 @@ const UserProfile = () => {
     setIsEditing(false);
   };
   
-  // Manipular mudanças no formulário
+  // Manejar cambios en el formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  // Seleção de avatar
+  // Selección de avatar
   const handleSelectAvatar = (id) => {
     setFormData(prev => ({ ...prev, avatar: id }));
   };
@@ -146,10 +146,10 @@ const UserProfile = () => {
         </div>
       </div>
       
-      {/* Conteúdo do perfil */}
+      {/* Contenido del perfil */}
       <div className="p-6">
         {isEditing ? (
-          // Formulário de edição
+          // Formulario de edición
           <div className="max-w-lg mx-auto">
             <h3 className="text-lg font-bold text-neutral-800 dark:text-white mb-4 transition-colors duration-200">{t('profile.editProfile')}</h3>
             
@@ -291,7 +291,7 @@ const UserProfile = () => {
                 )}
               </div>
               
-              {/* Estatísticas */}
+              {/* Estadísticas */}
               <div>
                 <h3 className="text-lg font-bold text-neutral-800 dark:text-white mb-4 flex items-center transition-colors duration-200">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">

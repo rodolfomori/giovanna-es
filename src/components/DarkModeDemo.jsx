@@ -53,7 +53,7 @@ const DarkModeDemo = () => {
               Os textos e cores de fundo são ajustados para melhor legibilidade.
             </p>
             <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
-              Botão Primário
+              Botón Primario
             </button>
           </div>
           
@@ -67,7 +67,7 @@ const DarkModeDemo = () => {
               Os componentes mantêm sua aparência visual, mas com paletas de cores otimizadas para o tema escuro.
             </p>
             <button className="bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-800 dark:text-neutral-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
-              Botão Secundário
+              Botón Secundario
             </button>
           </div>
         </div>
@@ -77,7 +77,7 @@ const DarkModeDemo = () => {
           darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
         } transition-colors duration-200`}>
           <h2 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-neutral-800'}`}>
-            Exemplo de Formulário
+            Ejemplo de Formulario
           </h2>
           
           <div className="space-y-4">
@@ -142,7 +142,7 @@ const DarkModeDemo = () => {
           darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
         } transition-colors duration-200`}>
           <h2 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-neutral-800'}`}>
-            Progresso e Estatísticas
+            Progreso y Estadísticas
           </h2>
           
           <div className="space-y-4">
@@ -182,7 +182,7 @@ const DarkModeDemo = () => {
               darkMode ? 'bg-neutral-800 border-neutral-700' : 'bg-neutral-50 border-neutral-200'
             } border transition-colors duration-200`}>
               <div className={`text-2xl font-bold ${darkMode ? 'text-neutral-100' : 'text-neutral-800'}`}>42</div>
-              <div className={darkMode ? 'text-neutral-400' : 'text-neutral-600'}>Desafios</div>
+              <div className={darkMode ? 'text-neutral-400' : 'text-neutral-600'}>Desafíos</div>
             </div>
             
             <div className={`p-3 rounded-lg ${

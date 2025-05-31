@@ -7,17 +7,17 @@ import ReactMarkdown from 'react-markdown';
 const Message = ({ message, isUser, animate = true }) => {
   const messageRef = useRef(null);
 
-  // Detectar elementos de código para aplicar highlight sintático
+  // Detectar elementos de código para aplicar resaltado sintáctico
   useEffect(() => {
     if (messageRef.current) {
       const codeBlocks = messageRef.current.querySelectorAll('pre code');
       if (codeBlocks.length > 0) {
-        // Prism.highlightAll(); // Uncomment if you're using Prism directly
+        // Prism.highlightAll(); // Descomentar si estás usando Prism directamente
       }
     }
   }, [message]);
 
-  // Variantes de animação para entrada de mensagens
+  // Variantes de animación para entrada de mensajes
   const messageVariants = {
     hidden: { 
       opacity: 0,
@@ -37,14 +37,14 @@ const Message = ({ message, isUser, animate = true }) => {
     }
   };
 
-  // Formatar conteúdo da mensagem com Markdown
+  // Formatear contenido del mensaje con Markdown
   const formatMessageContent = (content) => {
     if (!content) return content;
 
     return (
       <ReactMarkdown
         components={{
-          // Formatar blocos de código com sintaxe destacada
+          // Formatear bloques de código con sintaxis resaltada
           code: ({ node, inline, className, children, ...props }) => {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
@@ -64,16 +64,16 @@ const Message = ({ message, isUser, animate = true }) => {
               </code>
             );
           },
-          // Estilizar parágrafos
+          // Estilizar párrafos
           p: ({ children }) => <p className="mb-4 last:mb-0 transition-colors duration-200">{children}</p>,
           // Estilizar listas
           ul: ({ children }) => <ul className="list-disc ml-6 mb-4 space-y-1 transition-colors duration-200">{children}</ul>,
           ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-1 transition-colors duration-200">{children}</ol>,
-          // Estilizar cabeçalhos
+          // Estilizar encabezados
           h1: ({ children }) => <h1 className="text-xl font-bold mb-4 text-secondary dark:text-white transition-colors duration-200">{children}</h1>,
           h2: ({ children }) => <h2 className="text-lg font-bold mb-3 text-secondary dark:text-white transition-colors duration-200">{children}</h2>,
           h3: ({ children }) => <h3 className="text-base font-bold mb-2 text-secondary dark:text-white transition-colors duration-200">{children}</h3>,
-          // Estilizar links
+          // Estilizar enlaces
           a: ({ href, children }) => (
             <a 
               href={href} 
@@ -84,13 +84,13 @@ const Message = ({ message, isUser, animate = true }) => {
               {children}
             </a>
           ),
-          // Estilizar blocos de citação
+          // Estilizar bloques de cita
           blockquote: ({ children }) => (
             <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-gray-600 dark:text-gray-300 transition-colors duration-200">
               {children}
             </blockquote>
           ),
-          // Estilizar imagens
+          // Estilizar imágenes
           img: ({ src, alt }) => (
             <img 
               src={src} 
@@ -127,8 +127,8 @@ const Message = ({ message, isUser, animate = true }) => {
             </div>
             <span className="font-medium text-sm text-secondary-light dark:text-gray-200 transition-colors duration-200">Giovanna</span>
             
-            {/* Indicador de assistente IA */}
-            <span className="ml-2 text-xs px-1.5 py-0.5 bg-primary/10 dark:bg-primary/20 rounded text-primary">AI</span>
+            {/* Indicador de asistente IA */}
+            <span className="ml-2 text-xs px-1.5 py-0.5 bg-primary/10 dark:bg-primary/20 rounded text-primary">IA</span>
           </div>
         )}
         
@@ -136,12 +136,12 @@ const Message = ({ message, isUser, animate = true }) => {
           {formatMessageContent(message.content)}
         </div>
         
-        {/* Decoração de cantos */}
+        {/* Decoración de esquinas */}
         {isUser ? (
-          // Decoração para mensagens do usuário
+          // Decoración para mensajes del usuario
           <div className="absolute top-0 right-0 border-primary-dark border-t-8 border-r-8 border-b-0 border-l-0"></div>
         ) : (
-          // Decoração para mensagens do assistente
+          // Decoración para mensajes del asistente
           <div className="absolute top-0 left-0 border-gray-100 dark:border-secondary-700 border-t-8 border-l-8 border-b-0 border-r-0 transition-colors duration-200"></div>
         )}
       </div>

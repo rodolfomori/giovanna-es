@@ -7,11 +7,11 @@ const WelcomeModal = ({ onClose }) => {
   const [step, setStep] = useState(1);
   const totalSteps = 4;
 
-  // Features que o usuário pode usar
+  // Características que el usuario puede usar
   const features = [
     {
-      title: "Tire dúvidas de código",
-      description: "Pergunte sobre HTML, CSS, JavaScript ou qualquer conceito de programação",
+      title: "Haz preguntas sobre código",
+      description: "Consulta sobre HTML, CSS, JavaScript o cualquier concepto de programación",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -19,8 +19,8 @@ const WelcomeModal = ({ onClose }) => {
       )
     },
     {
-      title: "Pratique programação",
-      description: "Receba exercícios e desafios para praticar suas habilidades de codificação",
+      title: "Practica programación",
+      description: "Recibe ejercicios y desafíos para practicar tus habilidades de codificación",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -28,8 +28,8 @@ const WelcomeModal = ({ onClose }) => {
       )
     },
     {
-      title: "Receba explicações detalhadas",
-      description: "Entenda conceitos complexos com explicações passo a passo e exemplos práticos",
+      title: "Recibe explicaciones detalladas",
+      description: "Entiende conceptos complejos con explicaciones paso a paso y ejemplos prácticos",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -37,8 +37,8 @@ const WelcomeModal = ({ onClose }) => {
       )
     },
     {
-      title: "Melhore seus projetos",
-      description: "Obtenha sugestões para melhorar seu código e boas práticas de desenvolvimento",
+      title: "Mejora tus proyectos",
+      description: "Obtén sugerencias para mejorar tu código y buenas prácticas de desarrollo",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -47,7 +47,7 @@ const WelcomeModal = ({ onClose }) => {
     }
   ];
 
-  // Avançar para o próximo passo
+  // Avanzar al siguiente paso
   const nextStep = () => {
     if (step < totalSteps) {
       setStep(step + 1);
@@ -56,14 +56,14 @@ const WelcomeModal = ({ onClose }) => {
     }
   };
 
-  // Voltar ao passo anterior
+  // Volver al paso anterior
   const prevStep = () => {
     if (step > 1) {
       setStep(step - 1);
     }
   };
 
-  // Variantes de animação para o modal
+  // Variantes de animación para el modal
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { 
@@ -78,7 +78,7 @@ const WelcomeModal = ({ onClose }) => {
     }
   };
 
-  // Variantes de animação para o conteúdo do passo
+  // Variantes de animación para el contenido del paso
   const contentVariants = {
     hidden: { opacity: 0, x: 50 },
     visible: { 
@@ -102,20 +102,20 @@ const WelcomeModal = ({ onClose }) => {
         animate="visible"
         exit="exit"
       >
-        {/* Cabeçalho */}
+        {/* Encabezado */}
         <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
           <div className="flex items-center">
             <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center mr-4">
                 <img src={Logo} className="w-12 rounded-full"/>
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Bem-vindo ao Chat Giovanna</h2>
-              <p className="text-white/80">Sua assistente de programação</p>
+              <h2 className="text-2xl font-bold">Bienvenido al Chat Giovanna</h2>
+              <p className="text-white/80">Tu asistente de programación</p>
             </div>
           </div>
         </div>
 
-        {/* Conteúdo */}
+        {/* Contenido */}
         <div className="p-6">
           <AnimatePresence mode="wait">
             {step === 1 && (
@@ -130,10 +130,10 @@ const WelcomeModal = ({ onClose }) => {
                 <div className="w-full h-60 rounded-full overflow-hidden border-2 transition-all duration-300 border-primary">
                 <img src={Giovanna} className='w-full h-full object-cover'/>
                 </div>
-                <h3 className="text-xl font-bold text-secondary dark:text-white mb-2">Olá! Sou a Giovanna</h3>
+                <h3 className="text-xl font-bold text-secondary dark:text-white mb-2">¡Hola! Soy Giovanna</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Estou aqui para ajudar em sua jornada de aprendizado em programação. 
-                  Vamos ver o que podemos fazer juntos!
+                  Estoy aquí para ayudarte en tu viaje de aprendizaje en programación. 
+                  ¡Veamos qué podemos hacer juntos!
                 </p>
               </motion.div>
             )}
@@ -146,7 +146,7 @@ const WelcomeModal = ({ onClose }) => {
                 animate="visible"
                 exit="exit"
               >
-                <h3 className="text-xl font-bold text-secondary dark:text-white mb-4">O que você pode fazer aqui:</h3>
+                <h3 className="text-xl font-bold text-secondary dark:text-white mb-4">Lo que puedes hacer aquí:</h3>
                 <div className="space-y-4">
                   {features.slice(0, 2).map((feature, index) => (
                     <div key={index} className="flex items-start">
@@ -171,7 +171,7 @@ const WelcomeModal = ({ onClose }) => {
                 animate="visible"
                 exit="exit"
               >
-                <h3 className="text-xl font-bold text-secondary dark:text-white mb-4">E também:</h3>
+                <h3 className="text-xl font-bold text-secondary dark:text-white mb-4">Y también:</h3>
                 <div className="space-y-4">
                   {features.slice(2, 4).map((feature, index) => (
                     <div key={index} className="flex items-start">
@@ -197,22 +197,22 @@ const WelcomeModal = ({ onClose }) => {
                 exit="exit"
                 className="text-center"
               >
-           <div className="w-full h-60 rounded-full overflow-hidden border-2 transition-all duration-300 border-primary">
-                <img src={Giovanna} className='w-full h-full object-cover'/>
+                <div className="w-full h-60 rounded-full overflow-hidden border-2 transition-all duration-300 border-primary">
+                  <img src={Giovanna} className='w-full h-full object-cover'/>
                 </div>
-                <h3 className="text-xl font-bold text-secondary dark:text-white mb-2">Vamos começar!</h3>
+                <h3 className="text-xl font-bold text-secondary dark:text-white mb-2">¡Comencemos!</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Estou pronta para responder suas perguntas sobre programação.
-                  Basta digitar sua dúvida no campo abaixo e vamos iniciar nossa conversa!
+                  Estoy lista para responder tus preguntas sobre programación.
+                  Solo escribe tu duda en el campo de abajo y ¡comenzaremos nuestra conversación!
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
         
-        {/* Rodapé com navegação */}
+        {/* Pie de página con navegación */}
         <div className="p-4 bg-gray-50 dark:bg-secondary-900 border-t border-gray-200 dark:border-secondary-700 flex justify-between items-center">
-          {/* Indicadores de passo */}
+          {/* Indicadores de paso */}
           <div className="flex space-x-1">
             {[...Array(totalSteps)].map((_, i) => (
               <div 
@@ -226,27 +226,27 @@ const WelcomeModal = ({ onClose }) => {
             ))}
           </div>
           
-          {/* Botões */}
+          {/* Botones */}
           <div className="flex space-x-2">
             {step > 1 && (
               <button
                 onClick={prevStep}
                 className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-secondary-700 rounded-lg transition-colors"
               >
-                Voltar
+                Atrás
               </button>
             )}
             <button
               onClick={nextStep}
               className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
             >
-              {step < totalSteps ? 'Próximo' : 'Começar'}
+              {step < totalSteps ? 'Siguiente' : 'Comenzar'}
             </button>
           </div>
         </div>
       </motion.div>
 
-      {/* Decoração de fundo */}
+      {/* Decoración de fondo */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
       <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
     </div>

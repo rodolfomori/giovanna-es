@@ -8,7 +8,7 @@ import EnhancedMessage from '../components/Message';
 import EnhancedSuggestedTopics from '../components/SuggestedTopics';
 import WelcomeModal from '../components/WelcomeModal';
 
-// URL base da API
+// URL base de la API
 // const API_BASE_URL = 'https://chatbot-api.launchcontrol.com.br';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -22,7 +22,7 @@ const ChatPage = () => {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Verificar se é o primeiro acesso para mostrar o modal de boas-vindas
+  // Verificar si es el primer acceso para mostrar el modal de bienvenida
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
     if (!hasSeenWelcome) {
@@ -30,26 +30,26 @@ const ChatPage = () => {
     }
   }, []);
 
-  // Função para fechar o modal de boas-vindas
+  // Función para cerrar el modal de bienvenida
   const handleCloseWelcomeModal = () => {
     setShowWelcomeModal(false);
     localStorage.setItem('hasSeenWelcome', 'true');
   };
 
-  // Obter informações do LLM sendo usado
+  // Obtener información del LLM siendo usado
   const fetchLLMInfo = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/llm-info`);
       setLlmInfo(response.data);
     } catch (error) {
-      console.error('Erro ao obter informações do LLM:', error);
+      console.error('Error al obtener información del LLM:', error);
     }
   };
 
-  // Rolagem automática para o final das mensagens quando novas mensagens chegarem
+  // Desplazamiento automático hasta el final de los mensajes cuando llegan nuevos mensajes
   useEffect(() => {
     if (messagesEndRef.current) {
-      // Usar uma pequena pausa para garantir que o conteúdo foi renderizado
+      // Usar una pequeña pausa para garantizar que el contenido fue renderizado
       setTimeout(() => {
         window.scrollTo({
           top: document.body.scrollHeight,
@@ -59,53 +59,53 @@ const ChatPage = () => {
     }
   }, [messages]);
 
-  // Obter informações do LLM e iniciar conversa ao carregar
+  // Obtener información del LLM e iniciar conversación al cargar
   useEffect(() => {
     fetchLLMInfo();
     startConversation();
   }, []);
 
-  // Iniciar uma nova conversa
+  // Iniciar una nueva conversación
   const startConversation = async () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/start-conversation`);
       setConversationId(response.data.conversationId);
       setError(null);
     } catch (error) {
-      console.error('Erro ao iniciar conversa:', error);
-      setError('Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.');
+      console.error('Error al iniciar conversación:', error);
+      setError('No fue posible conectarse al servidor. Verifica tu conexión e intenta nuevamente.');
     }
   };
 
-  // Enviar mensagem para o backend
+  // Enviar mensaje al backend
   const sendMessage = async (inputMessage) => {
     if (!inputMessage.trim() || isLoading) return;
 
-    // Adiciona a mensagem do usuário
+    // Agrega el mensaje del usuario
     const userMessage = { role: 'user', content: inputMessage };
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     setError(null);
 
     try {
-      // Envia a mensagem para o servidor e aguarda a resposta
+      // Envía el mensaje al servidor y espera la respuesta
       const response = await axios.post(`${API_BASE_URL}/api/chat`, {
         message: inputMessage,
         conversationId
       });
 
-      // Adiciona a resposta do assistente
+      // Agrega la respuesta del asistente
       setMessages(prev => [
         ...prev,
         { role: 'assistant', content: response.data.message }
       ]);
 
-      // Atualiza o ID da conversa se necessário
+      // Actualiza el ID de la conversación si es necesario
       if (response.data.conversationId) {
         setConversationId(response.data.conversationId);
       }
 
-      // Atualiza as informações do provedor se incluídas na resposta
+      // Actualiza la información del proveedor si está incluida en la respuesta
       if (response.data.provider) {
         setLlmInfo(prev => ({
           ...prev,
@@ -113,15 +113,15 @@ const ChatPage = () => {
         }));
       }
     } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-      setError('Não foi possível enviar sua mensagem. Verifique sua conexão e tente novamente.');
+      console.error('Error al enviar mensaje:', error);
+      setError('No fue posible enviar tu mensaje. Verifica tu conexión e intenta nuevamente.');
 
-      // Adiciona mensagem de erro ao chat
+      // Agrega mensaje de error al chat
       setMessages(prev => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente em alguns instantes.\n\nGiovanna 👩‍💻'
+          content: 'Lo siento, ocurrió un error al procesar tu mensaje. Por favor, intenta nuevamente en unos momentos.\n\nGiovanna 👩‍💻'
         }
       ]);
     } finally {
@@ -129,12 +129,12 @@ const ChatPage = () => {
     }
   };
 
-  // Função para lidar com a seleção de um tópico sugerido
+  // Función para manejar la selección de un tema sugerido
   const handleSelectTopic = (prompt) => {
     sendMessage(prompt);
   };
 
-  // Componente de animação de loading
+  // Componente de animación de carga
   const LoadingIndicator = () => (
     <div className="flex justify-start mb-6">
       <div className="max-w-[85%] md:max-w-[75%] rounded-2xl px-5 py-4 bg-white dark:bg-secondary-800 border border-gray-100 dark:border-secondary-700 rounded-tl-none shadow-sm transition-colors duration-200">
@@ -143,7 +143,7 @@ const ChatPage = () => {
             <span className="text-primary text-sm font-bold">G</span>
           </div>
           <span className="font-medium text-sm text-secondary-light dark:text-gray-200 transition-colors duration-200">Giovanna</span>
-          <span className="ml-2 text-xs px-1.5 py-0.5 bg-primary/10 dark:bg-primary/20 rounded text-primary">AI</span>
+          <span className="ml-2 text-xs px-1.5 py-0.5 bg-primary/10 dark:bg-primary/20 rounded text-primary">IA</span>
         </div>
         <div className="flex items-center text-secondary-light dark:text-gray-300 transition-colors duration-200">
           <div className="flex space-x-1">
@@ -151,13 +151,13 @@ const ChatPage = () => {
             <span className="loading-dot"></span>
             <span className="loading-dot"></span>
           </div>
-          <span className="ml-3 text-sm">Digitando...</span>
+          <span className="ml-3 text-sm">Escribiendo...</span>
         </div>
       </div>
     </div>
   );
 
-  // Estado de erro da conexão
+  // Estado de error de conexión
   const renderErrorMessage = () => {
     if (!error) return null;
 
@@ -182,7 +182,7 @@ const ChatPage = () => {
     );
   };
 
-  // Renderizar estado vazio (sem mensagens)
+  // Renderizar estado vacío (sin mensajes)
   const renderEmptyState = () => (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -196,27 +196,27 @@ const ChatPage = () => {
         </svg>
       </div>
       <h2 className="text-2xl font-bold text-secondary dark:text-white mb-3 transition-colors duration-200">
-        Como posso ajudar você hoje?
+        ¿Cómo puedo ayudarte hoy?
       </h2>
       <p className="text-secondary-light dark:text-gray-300 mb-6 max-w-md mx-auto transition-colors duration-200">
-        Estou aqui para responder suas dúvidas sobre programação e desenvolvimento web.
-        Pergunte sobre HTML, CSS, JavaScript ou qualquer outro conceito!
+        Estoy aquí para responder tus dudas sobre programación y desarrollo web.
+        ¡Pregúntame sobre HTML, CSS, JavaScript o cualquier otro concepto!
       </p>
 
-      {/* Tópicos sugeridos */}
+      {/* Temas sugeridos */}
       <EnhancedSuggestedTopics onSelectTopic={handleSelectTopic} />
     </motion.div>
   );
 
   return (
     <AppLayout>
-      {/* Modal de boas-vindas */}
+      {/* Modal de bienvenida */}
       <AnimatePresence>
         {showWelcomeModal && <WelcomeModal onClose={handleCloseWelcomeModal} />}
       </AnimatePresence>
 
       <div className="container py-8">
-        {/* Cabeçalho */}
+        {/* Encabezado */}
         <motion.div
           className="text-center mb-8"
           initial={{ opacity: 0, y: -20 }}
@@ -226,28 +226,28 @@ const ChatPage = () => {
           <div className="flex flex-col items-center justify-center">
             <Logo size="lg" animated={true} className="mb-4" />
             <h1 className="text-3xl md:text-4xl font-bold text-secondary dark:text-white mb-2 transition-colors duration-300">
-              <span className="text-gradient">Giovanna</span> - Assistente de Programação
+              <span className="text-gradient">Giovanna</span> - Asistente de Programación
             </h1>
             <p className="text-lg text-secondary-light dark:text-gray-300 max-w-2xl mx-auto mb-2 transition-colors duration-300">
-              Tire suas dúvidas sobre programação e desenvolvimento web
+              Resuelve tus dudas sobre programación y desarrollo web
             </p>
             {llmInfo && (
               <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary">
-                Rodando com {llmInfo.provider === 'groq' ? 'Groq' : 'OpenAI'}
+                Funcionando con {llmInfo.provider === 'groq' ? 'Groq' : 'OpenAI'}
                 {llmInfo.model && ` (${llmInfo.model})`}
               </div>
             )}
           </div>
         </motion.div>
 
-        {/* Mostrar erro de conexão se houver */}
+        {/* Mostrar error de conexión si existe */}
         <AnimatePresence>
           {error && renderErrorMessage()}
         </AnimatePresence>
 
-        {/* Área de chat - sem scroll interno */}
+        {/* Área de chat - sin scroll interno */}
         <div className="max-w-4xl mx-auto relative mb-24">
-          {/* Background decorativo */}
+          {/* Fondo decorativo */}
           <div className="absolute -top-10 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10"></div>
           <div className="absolute bottom-10 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10"></div>
 
@@ -257,13 +257,13 @@ const ChatPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {/* Conteúdo do chat - sem altura fixa e sem overflow */}
+            {/* Contenido del chat - sin altura fija y sin overflow */}
             <div className="p-6 relative">
               {messages.length === 0 ? (
                 renderEmptyState()
               ) : (
                 <>
-                  {/* Mensagens */}
+                  {/* Mensajes */}
                   {messages.map((message, index) => (
                     <EnhancedMessage
                       key={index}
@@ -272,16 +272,16 @@ const ChatPage = () => {
                     />
                   ))}
 
-                  {/* Show loading indicator while waiting for response */}
+                  {/* Mostrar indicador de carga mientras espera la respuesta */}
                   {isLoading && <LoadingIndicator />}
 
-                  {/* Referência para scroll automático */}
+                  {/* Referencia para desplazamiento automático */}
                   <div ref={messagesEndRef} />
                 </>
               )}
             </div>
 
-            {/* Área de digitação - fixada na parte inferior do chat */}
+            {/* Área de escritura - fijada en la parte inferior del chat */}
             <div className="sticky bottom-0 p-6 bg-white/95 dark:bg-secondary-900/95 backdrop-blur-sm border-t border-gray-200 dark:border-secondary-700">
               <EnhancedChatInput
                 onSendMessage={sendMessage}
@@ -290,7 +290,7 @@ const ChatPage = () => {
             </div>
           </motion.div>
 
-          {/* Dicas sobre o assistente */}
+          {/* Consejos sobre el asistente */}
           <motion.div
             className="text-center mt-6 text-secondary-light dark:text-gray-400 text-sm transition-colors duration-200"
             initial={{ opacity: 0 }}
@@ -298,7 +298,7 @@ const ChatPage = () => {
             transition={{ duration: 0.5, delay: 0.7 }}
           >
             <p className="mb-1">
-              Giovanna é uma assistente especializada em HTML, CSS, JavaScript e conceitos básicos de programação.
+              Giovanna es una asistente especializada en HTML, CSS, JavaScript y conceptos básicos de programación.
             </p>
             {llmInfo && (
               <p>

@@ -5,34 +5,32 @@ const ChatInput = ({ onSendMessage, isLoading, className = '' }) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef(null);
   
-  // Ajustar a altura do textarea dinamicamente conforme o conteúdo
+  // Ajustar la altura del textarea dinámicamente según el contenido
   useEffect(() => {
     if (textareaRef.current) {
-      // Reset height to auto to get the right scrollHeight
+      // Restablecer altura a auto para obtener el scrollHeight correcto
       textareaRef.current.style.height = 'auto';
-      // Set new height based on the scrollHeight
+      // Establecer nueva altura basada en el scrollHeight
       const scrollHeight = textareaRef.current.scrollHeight;
-      // Estabelecer uma altura máxima para o textarea
+      // Establecer una altura máxima para el textarea
       const maxHeight = 150;
       textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
     }
   }, [message]);
   
-  
-
-  // Manipular envio da mensagem
+  // Manejar envío de mensaje
   const handleSendMessage = () => {
     if (message.trim() && !isLoading) {
       onSendMessage(message);
       setMessage('');
-      // Reset the textarea height
+      // Restablecer la altura del textarea
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
     }
   };
 
-  // Manipular pressionamento de teclas (Enter para enviar)
+  // Manejar pulsaciones de teclas (Enter para enviar)
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -40,7 +38,7 @@ const ChatInput = ({ onSendMessage, isLoading, className = '' }) => {
     }
   };
 
-  // Variantes de animação para o botão de envio
+  // Variantes de animación para el botón de envío
   const buttonVariants = {
     idle: { scale: 1 },
     hover: { scale: 1.05, boxShadow: '0 0 8px rgba(55, 227, 89, 0.5)' },
@@ -55,7 +53,7 @@ const ChatInput = ({ onSendMessage, isLoading, className = '' }) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyPress}
-          placeholder="Digite sua dúvida de programação..."
+          placeholder="Escribe tu duda de programación..."
           className="flex-grow resize-none rounded-lg border border-gray-200 dark:border-secondary-700 outline-none focus:ring-2 focus:ring-primary focus:border-primary p-3 mr-2 min-h-[120px] bg-white dark:bg-secondary-800 text-secondary-light dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-200"
           disabled={isLoading}
         />
@@ -85,17 +83,17 @@ const ChatInput = ({ onSendMessage, isLoading, className = '' }) => {
         </motion.button>
       </div>
       
-      {/* Dicas e informações */}
+      {/* Consejos e información */}
       <div className="px-3 pb-3">
         <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-1">
-            <span>Pressione</span>
+            <span>Presiona</span>
             <kbd className="bg-gray-100 dark:bg-secondary-700 px-1.5 py-0.5 rounded font-mono text-xs">Enter</kbd>
             <span>para enviar</span>
           </div>
           <button 
             className="text-primary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200"
-            title="Perguntas frequentes"
+            title="Preguntas frecuentes"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
