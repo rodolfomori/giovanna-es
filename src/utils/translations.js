@@ -170,5 +170,37 @@ export const translations = {
     viewMore: 'Ver más',
     noChallenges: 'Aún no has completado ningún desafío.',
     startChallenge: 'Iniciar un desafío'
+  },
+  
+  codeCheck: {
+    pageTitle: 'Corrección de Código',
+    pageDescription: 'Encuentra bugs, recibe consejos y aprende a mejorar tu código',
+    pasteCode: 'Pegar Código',
+    uploadFile: 'Subir Archivo',
+    pasteCodeHere: 'Pega tu código aquí',
+    uploadYourFile: 'Sube tu archivo de código',
+    clickToChoose: 'Haz clic para elegir un archivo',
+    dragAndDrop: 'o arrastra y suelta aquí',
+    supportsMany: 'Soporta diversos tipos de archivos de código y texto',
+    fileLoaded: 'Archivo cargado',
+    replaceCode: 'Reemplazar código',
+    analyzeCode: 'Analizar Código',
+    analyzing: 'Analizando...',
+    codeAnalysis: 'Análisis de Código',
+    bugSolutionTips: 'Consejos para Solucionar Bugs',
+    readErrorMessages: 'Lee atentamente los mensajes de error - generalmente señalan el problema exacto.',
+    useConsoleLog: 'Usa console.log() para verificar valores de variables en diferentes puntos del código.',
+    breakDownProblem: 'Divide el problema en partes más pequeñas y prueba cada parte por separado.',
+    checkCommonErrors: 'Verifica errores comunes como: paréntesis no cerrados, errores de tipeo en nombres de variables, y confusión entre = (asignación) y == o === (comparación).',
+    needMoreHelp: '¿Necesitas más ayuda? Conversa con Giovanna',
+    
+    // Mensajes de error
+    fileNotSupported: 'Tipo de archivo no soportado. Por favor, envía solo archivos de código o texto.',
+    invalidContent: 'El contenido del archivo no es texto válido',
+    errorReadingFile: 'Error al leer el archivo. Por favor, intenta nuevamente con otro archivo.',
+    cantReadContent: 'No fue posible leer el contenido del archivo. Asegúrate de que es un archivo de texto válido.',
+    addCodeToAnalyze: 'Por favor, añade algún código para analizar.',
+    serverResponseInvalid: 'Respuesta inválida del servidor',
+    analysisError: 'No fue posible analizar el código en este momento. Por favor, intenta nuevamente más tarde.'
   }
 };
