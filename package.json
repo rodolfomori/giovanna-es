@@ -8,7 +8,7 @@
     "build": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "yarn build && aws s3 sync ./dist s3://chat.devclub.com.br --delete && aws cloudfront create-invalidation --distribution-id E1UEMWXHQ1CUWO --paths '/*'"
+    "deploy": "yarn build && aws s3 sync ./dist s3://giovanna-es --delete && aws cloudfront create-invalidation --distribution-id E2BJ69INXNZSH5 --paths '/*'"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.9",
